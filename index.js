@@ -1,13 +1,13 @@
-import { Server } from 'ws';
+const WebSocket = require('ws');
 
-const server = new Server({ port: 5000 });
+const server = new WebSocket.Server({ port: 5000 });
 
 server.on('connection', (ws) => {
   console.log('New client connected');
 
   ws.on('message', (message) => {
     console.log('Received:', message);
-    ws.send('Hello, you sent -> ' + message);
+    ws.send('Arthur: ' + message);
   });
 
   ws.on('close', () => {

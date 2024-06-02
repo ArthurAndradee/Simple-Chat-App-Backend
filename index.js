@@ -1,20 +1,21 @@
-const WebSocket = require('ws');
+const io = require('socket.io')(5000)
 
-const server = new WebSocket.Server({ port: 5000 });
+io.on('connection', socket => {
+  console.log('a user connected');
 
-server.on('connection', (ws) => {
-  console.log('New client connected');
-
-  ws.on('message', (message) => {
-    console.log('Received:', message);
-    ws.send('Arthur: ' + message);
+  socket.on('User joined', name => {
+    io.emit('user-joined', { name });
   });
 
-  ws.on('close', () => {
-    console.log('Client disconnected');
+  socket.on('send-chat-message', (messageData) => {
+    io.emit('chat-message', messageData);
   });
 
-  ws.send('Welcome to the WebSocket server');
+  socket.on('disconnect-user', (username) => {
+    io.emit('user-disconnected', { name: username });
+  });
+
+  socket.on('disconnect', () => {
+    console.log('user disconnected');
+  });
 });
-
-console.log('WebSocket server is running on ws://localhost:5000');
